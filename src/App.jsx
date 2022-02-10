@@ -1,84 +1,79 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "./components/Sidebar";
-import Editor from "./components/Editor";
-import { data } from "./data";
-import Split from "react-split";
+import React, { useEffect, useState } from "react";
+import Die from "./components/Die";
+import Confetti from "react-confetti";
 import { nanoid } from "nanoid";
-import "react-mde/lib/styles/css/react-mde-all.css";
 
 export default function App() {
+  const generateNewDice = () => {
+    return {
+      value: Math.ceil(Math.random() * 6),
+      isHeld: false,
+      id: nanoid(),
+    };
+  };
 
-  const [notes, setNotes] = useState(
-    JSON.parse(localStorage.getItem("notes")) || []
-  );
+  const allNewDice = () => {
+    const newDice = [];
+    for (let i = 0; i < 10; i++) {
+      newDice.push(generateNewDice());
+    }
+    return newDice;
+  };
 
-  const [currentNoteId, setCurrentNoteId] = useState(notes[0]?.id);
+  const [dice, setDice] = useState(allNewDice());
+  const [tenzies, setTenzies] = useState(false);
+
+  const rollDice = () => {
+    if (!tenzies) {
+      setDice((prev) =>
+        prev.map((die) => {
+          return die.isHeld ? die : generateNewDice();
+        })
+      );
+    } else {
+      setDice(allNewDice());
+    }
+  };
+
+  const holdDice = (id) => {
+    setDice((prev) =>
+      prev.map((die) => {
+        return die.id === id ? { ...die, isHeld: !die.isHeld } : die;
+      })
+    );
+  };
+
+  const diceElements = dice.map((die) => (
+    <Die
+      key={die.id}
+      value={die.value}
+      isHeld={die.isHeld}
+      holdDice={() => holdDice(die.id)}
+    />
+  ));
 
   useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
-
-  const createNewNote = () => {
-    const newNote = {
-      id: nanoid(),
-      body: "# Type your markdown note's title here",
-    };
-    setNotes((prevNotes) => [newNote, ...prevNotes]);
-    setCurrentNoteId(newNote.id);
-  }
-
-  const updateNote = (text) => {
-    // Refresca el estado de notes a partir de la data al principio
-    setNotes((oldNotes) => {
-      const newArray = [];
-      for (let i = 0; i < oldNotes.length; i++) {
-        const oldNote = oldNotes[i];
-        if (oldNote.id === currentNoteId) {
-          newArray.unshift({ ...oldNote, body: text });
-        } else {
-          newArray.push(oldNote);
-        }
-      }
-      return newArray;
-    });
-  }
-
-  const deleteNote = (event, noteId) => {
-    event.stopPropagation()
-    setNotes(oldNotes => oldNotes.filter(note => note.id !== noteId))
-}
-
-  const findCurrentNote = () => {
-    return (
-      notes.find((note) => {
-        return note.id === currentNoteId;
-      }) || notes[0]
-    );
-  }
+    const allHeld = dice.every((die) => die.isHeld);
+    const firstValue = dice[0].value;
+    const allSameValue = dice.every((die) => die.value === firstValue);
+    if (allHeld && allSameValue) {
+      setTenzies(true);
+      console.log("You won!");
+    }
+  }, [dice]);
 
   return (
     <main>
-      {notes.length > 0 ? (
-        <Split sizes={[30, 70]} direction="horizontal" className="split">
-          <Sidebar
-            notes={notes}
-            currentNote={findCurrentNote()}
-            setCurrentNoteId={setCurrentNoteId}
-            newNote={createNewNote}
-            deleteNote={deleteNote}
-          />
-          {currentNoteId && notes.length > 0 && (
-            <Editor currentNote={findCurrentNote()} updateNote={updateNote} />
-          )}
-        </Split>
-      ) : (
-        <div className="no-notes">
-          <h1>You have no notes</h1>
-          <button className="first-note" onClick={createNewNote}>
-            Create one now
-          </button>
-        </div>
-      )}
+      {tenzies && <Confetti />}
+      <h1 className="title">Tenzies</h1>
+      <p className="instructions">
+        Roll until all dice are the same. Click each die to freeze it at its
+        current value between rolls.
+      </p>
+      <div className="dice-container">{diceElements}</div>
+      <button className="roll-dice" onClick={rollDice}>
+        {tenzies ? "New Game" : "Roll Dices!"}
+      </button>
     </main>
   );
 }
