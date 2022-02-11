@@ -5,19 +5,46 @@
 body {
     margin: 0;
     background-color: #0B2434;
-    padding: 20px;
 }
 
 main {
     background-color: #F5F5F5;
-    height: 400px;
-    max-width: 800px;
-    border-radius: 5px;
-    padding: 20px;
+    height: calc(100vh - 50px);
+    max-width: calc(100vw - 20px);
+    border: 20px #0B2434 solid;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    padding: 20px;
+}
+
+.navbar {
+    height: 50px;
+    background-color: lightcoral;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+
+.listItem {
+    margin-right: 20px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .title {
