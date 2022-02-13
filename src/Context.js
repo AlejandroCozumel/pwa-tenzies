@@ -7,7 +7,7 @@ export default function Context(props) {
     const [userObject, setUserObject] = useState();
 
     useEffect(() => {
-        axios.get("http://localhost:4000/getuser", { withCredentials: true }).then((res) => {
+        axios.get("https://backend-tenzies.herokuapp.com/getuser", { withCredentials: true }).then((res) => {
             console.log('response',res);
             if (res.data) {
                 setUserObject(res.data);

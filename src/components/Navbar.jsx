@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 // const Navbar = ({ user }) => {
 const Navbar = () => {
   const logout = () => {
-    window.open("http://localhost:4000/auth/logout", "_self");
+    window.open("https://backend-tenzies.herokuapp.com/auth/logout", "_self");
   };
 
   return (

@@ -6,11 +6,11 @@ import { FaGithubSquare } from "react-icons/fa";
 const Login = () => {
 
   const google = () => {
-    window.open("http://localhost:4000/auth/google", "_self");
+    window.open("https://backend-tenzies.herokuapp.com/auth/google", "_self");
   };
 
   const github = () => {
-    window.open("http://localhost:4000/auth/github", "_self");
+    window.open("https://backend-tenzies.herokuapp.com/auth/github", "_self");
   };
 
   // const facebook = () => {
