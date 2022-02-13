@@ -64,7 +64,8 @@ export default function Tenzies() {
 
   return (
     <main>
-      {tenzies &&  <Confetti />}
+      <div className="wrapper-tenzies">
+      {tenzies &&  <Confetti run={true} />}
       <h1 className="title">Tenzies</h1>
       <p className="instructions">
         Roll until all dice are the same. Click each die to freeze it at its
@@ -74,6 +75,7 @@ export default function Tenzies() {
       <button className="roll-dice" onClick={rollDice}>
         {tenzies ? "New Game" : "Roll Dices!"}
       </button>
+      </div>
     </main>
   );
 }
